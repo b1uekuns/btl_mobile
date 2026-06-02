@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "QuizMaker",
+    "slug": "quizmaker-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "quizmaker",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.quizmaker.mobile"
+    },
+    "android": {
+      "package": "com.quizmaker.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
