@@ -3,7 +3,7 @@
  */
 import React, { useState, useMemo } from 'react'
 import {
-  View, Text, FlatList, TouchableOpacity, Modal,
+  View, Text, FlatList, TouchableOpacity,
   StyleSheet, Alert
 } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
@@ -14,6 +14,7 @@ import DifficultyBadge from '../../components/DifficultyBadge'
 import QuestionCard from '../../components/QuestionCard'
 import SearchFilterBar from '../../components/SearchFilterBar'
 import EmptyState from '../../components/EmptyState'
+import AnimatedModal from '../../components/AnimatedModal'
 
 export default function ExamDetailScreen(): React.ReactElement {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -110,7 +111,7 @@ export default function ExamDetailScreen(): React.ReactElement {
       </TouchableOpacity>
 
       {/* Modal ngân hàng */}
-      <Modal visible={showBank} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowBank(false)}>
+      <AnimatedModal visible={showBank} onClose={() => setShowBank(false)}>
         <View style={styles.modal}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Ngân hàng câu hỏi</Text>
@@ -177,7 +178,7 @@ export default function ExamDetailScreen(): React.ReactElement {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </AnimatedModal>
     </View>
   )
 }

@@ -2,9 +2,14 @@
  * Màn hình 5 – Hướng dẫn sử dụng (Shared – n+1)
  */
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, LayoutAnimation } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, LayoutAnimation, UIManager, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '../../constants/colors'
+
+// Bật LayoutAnimation trên Android (mặc định bị tắt)
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
+}
 
 const SECTIONS = [
   {

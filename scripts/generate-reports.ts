@@ -148,7 +148,7 @@ function buildTeamReport(): Document {
           // 1. Giới thiệu
           h1('1. Giới thiệu đề tài'),
           para(
-            'Ứng dụng "QuizMaker Mobile" là một ứng dụng di động đa nền tảng (iOS/Android) cho phép giảng viên hoặc giáo viên tạo và quản lý ngân hàng câu hỏi trắc nghiệm và các đề thi. Ứng dụng được xây dựng bằng React Native và Expo SDK 52, sử dụng TypeScript với Expo Router cho điều hướng file-based.'
+            'Ứng dụng "QuizMaker Mobile" là một ứng dụng di động đa nền tảng (iOS/Android) cho phép giảng viên hoặc giáo viên tạo và quản lý ngân hàng câu hỏi trắc nghiệm và các đề thi. Ứng dụng được xây dựng bằng React Native, sử dụng TypeScript với Expo Router cho điều hướng file-based.'
           ),
           para(
             'Dự án là phiên bản mobile tương đương với ứng dụng desktop đã xây dựng bằng Electron, áp dụng các kiến thức về phát triển ứng dụng di động bao gồm navigation, state management, local storage, animation và data validation.'

@@ -51,9 +51,9 @@ export default function TeamScreen(): React.ReactElement {
       <Text style={styles.sectionTitle}>⚙️ Công nghệ sử dụng</Text>
       <View style={styles.card}>
         {[
-          ["Framework", "React Native + Expo SDK 52"],
+          ["Framework", "React Native"],
           ["Ngôn ngữ", "TypeScript"],
-          ["Navigation", "Expo Router (file-based)"],
+          ["Navigation", "Expo Router"],
           ["State", "Context API + useReducer"],
           ["Lưu trữ", "AsyncStorage (@react-native-async-storage)"],
           ["Animation", "React Native Animated API"],

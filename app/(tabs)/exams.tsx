@@ -5,7 +5,7 @@
 import React, { useState } from 'react'
 import {
   View, FlatList, TouchableOpacity, Text, StyleSheet,
-  Alert, Modal, TextInput, ScrollView
+  Alert, TextInput, ScrollView
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -13,6 +13,7 @@ import { useApp } from '../../context/AppContext'
 import { Colors, DifficultyLabels } from '../../constants/colors'
 import DifficultyBadge from '../../components/DifficultyBadge'
 import EmptyState from '../../components/EmptyState'
+import AnimatedModal from '../../components/AnimatedModal'
 import { CreateExamInput, ExamDifficulty } from '../../types'
 
 const DIFFICULTIES: { value: ExamDifficulty; label: string }[] = [
@@ -27,12 +28,12 @@ export default function ExamsScreen(): React.ReactElement {
   const router = useRouter()
   const [showCreate, setShowCreate] = useState(false)
   const [form, setForm] = useState<CreateExamInput>({ title: '', description: '', duration: 45, difficulty: 'mixed' })
-  const [errors, setErrors] = useState<Partial<CreateExamInput>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof CreateExamInput, string>>>({})
 
   function validate(): boolean {
     const e: Partial<Record<keyof CreateExamInput, string>> = {}
     if (!form.title.trim()) e.title = 'Tên đề thi không được để trống'
-    if (!form.duration || form.duration <= 0) e.description = 'Thời gian phải > 0'
+    if (!form.duration || form.duration <= 0) e.duration = 'Thời gian phải > 0'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -90,7 +91,7 @@ export default function ExamsScreen(): React.ReactElement {
       </TouchableOpacity>
 
       {/* Modal tạo đề thi */}
-      <Modal visible={showCreate} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowCreate(false)}>
+      <AnimatedModal visible={showCreate} onClose={() => setShowCreate(false)}>
         <View style={styles.modal}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Tạo đề thi mới</Text>
@@ -119,7 +120,7 @@ export default function ExamsScreen(): React.ReactElement {
 
             <Text style={styles.label}>Thời gian (phút) *</Text>
             <TextInput
-              style={[styles.input, errors.description ? styles.inputError : null]}
+              style={[styles.input, errors.duration ? styles.inputError : null]}
               keyboardType="number-pad"
               placeholder="45"
               value={String(form.duration)}
@@ -150,7 +151,7 @@ export default function ExamsScreen(): React.ReactElement {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </AnimatedModal>
     </View>
   )
 }
