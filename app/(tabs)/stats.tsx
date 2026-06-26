@@ -2,34 +2,16 @@
  * Màn hình 3 – Thống kê (Person 4)
  * Chức năng: Tổng quan, phân bố độ khó, animation đếm số
  */
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useRef, useMemo } from 'react'
 import { View, Text, StyleSheet, ScrollView, Animated } from 'react-native'
 import { useFocusEffect } from 'expo-router'
 import { useApp } from '../../context/AppContext'
 import { Colors, DifficultyColors, DifficultyLabels } from '../../constants/colors'
 
-interface AnimatedCounterProps {
-  value: number
-  style?: object
-}
-
-function AnimatedCounter({ value, style }: AnimatedCounterProps): React.ReactElement {
-  const anim = useRef(new Animated.Value(0)).current
-  const displayed = useRef(0)
-
-  useEffect(() => {
-    Animated.timing(anim, { toValue: value, duration: 900, useNativeDriver: false }).start()
-  }, [value])
-
-  return (
-    <Animated.Text style={style}>
-      {anim.interpolate({ inputRange: [0, value || 1], outputRange: ['0', String(value)] })
-        .toString()}
-    </Animated.Text>
-  )
-}
-
-// Simpler animated number using state
+/**
+ * Đếm số từ 0 → `to` trong 1000ms mỗi khi màn hình được focus.
+ * Dùng addListener để convert Animated.Value → integer hiển thị.
+ */
 function CountUp({ to, style }: { to: number; style?: object }): React.ReactElement {
   const animVal = useRef(new Animated.Value(0)).current
   const [display, setDisplay] = React.useState(0)
@@ -42,7 +24,7 @@ function CountUp({ to, style }: { to: number; style?: object }): React.ReactElem
       const id = animVal.addListener(({ value }) => setDisplay(Math.round(value)))
       anim.start()
       return () => { animVal.removeListener(id); anim.stop() }
-    }, [to])
+    }, [to, animVal])
   )
 
   return <Text style={style}>{display}</Text>
@@ -54,7 +36,8 @@ export default function StatsScreen(): React.ReactElement {
   const slideAnim = useRef(new Animated.Value(40)).current
   const opacityAnim = useRef(new Animated.Value(0)).current
 
-  // Slide-in animation khi màn hình focus — đáp ứng yêu cầu animation
+  // Slide-in (translateY 40→0) + Fade-in (opacity 0→1) khi màn hình focus
+  // useNativeDriver: true → chạy trên native thread, không block JS
   useFocusEffect(
     React.useCallback(() => {
       slideAnim.setValue(40)
@@ -63,7 +46,7 @@ export default function StatsScreen(): React.ReactElement {
         Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
         Animated.timing(opacityAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
       ]).start()
-    }, [])
+    }, [slideAnim, opacityAnim])
   )
 
   const diffStats = useMemo(() => {

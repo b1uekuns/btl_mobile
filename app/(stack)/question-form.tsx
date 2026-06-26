@@ -33,8 +33,13 @@ export default function QuestionFormScreen(): React.ReactElement {
   })
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({})
 
+  // Set title khi biết có edit hay tạo mới
   useEffect(() => {
-    navigation.setOptions({ title: existing ? 'Sửa câu hỏi' : 'Thêm câu hỏi' })
+    navigation.setOptions({ title: id ? 'Sửa câu hỏi' : 'Thêm câu hỏi' })
+  }, [id])
+
+  // Nạp dữ liệu câu hỏi vào form – chỉ chạy 1 lần khi mount (id ổn định)
+  useEffect(() => {
     if (existing) {
       setForm({
         content: existing.content,
@@ -44,7 +49,8 @@ export default function QuestionFormScreen(): React.ReactElement {
         topic: existing.topic,
       })
     }
-  }, [existing])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // intentionally empty – chỉ chạy lúc mount để tránh reset form khi context update
 
   function updateOption(index: number, value: string): void {
     const next = [...form.optionTexts] as [string, string, string, string]

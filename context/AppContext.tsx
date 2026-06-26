@@ -124,7 +124,8 @@ export function AppProvider({ children }: { children: React.ReactNode }): React.
   }, [addHistory])
 
   const updateQuestion = useCallback((id: string, input: CreateQuestionInput) => {
-    const options = input.optionTexts.map((text, i) => ({ id: generateId(), text }))
+    const original = state.questions.find((q) => q.id === id)
+    const options = input.optionTexts.map((text) => ({ id: generateId(), text }))
     const question: Question = {
       id,
       content: input.content.trim(),
@@ -132,11 +133,11 @@ export function AppProvider({ children }: { children: React.ReactNode }): React.
       correctOptionId: options[input.correctOptionIndex].id,
       difficulty: input.difficulty,
       topic: input.topic.trim(),
-      createdAt: new Date().toISOString(),
+      createdAt: original?.createdAt ?? new Date().toISOString(), // giữ nguyên createdAt gốc
     }
     dispatch({ type: 'UPDATE_QUESTION', question })
     addHistory(`Đã cập nhật câu hỏi: "${question.content.substring(0, 40)}..."`, 'question')
-  }, [addHistory])
+  }, [addHistory, state.questions])
 
   const deleteQuestion = useCallback((id: string) => {
     dispatch({ type: 'DELETE_QUESTION', id })
