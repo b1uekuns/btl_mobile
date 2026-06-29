@@ -6,7 +6,7 @@
 import React, { useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  StyleSheet, KeyboardAvoidingView, Platform,
+  StyleSheet, Platform,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -41,94 +41,89 @@ export default function CreateExamScreen(): React.ReactElement {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
     >
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Tên đề thi */}
-        <Text style={styles.label}>
-          Tên đề thi <Text style={styles.required}>*</Text>
-        </Text>
+      {/* Tên đề thi */}
+      <Text style={styles.label}>
+        Tên đề thi <Text style={styles.required}>*</Text>
+      </Text>
+      <TextInput
+        style={[styles.input, errors.title ? styles.inputError : null]}
+        placeholder="Nhập tên đề thi..."
+        placeholderTextColor={Colors.muted}
+        value={form.title}
+        onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
+        autoFocus
+        returnKeyType="next"
+      />
+      {errors.title ? <Text style={styles.errorText}>{errors.title}</Text> : null}
+
+      {/* Mô tả */}
+      <Text style={styles.label}>Mô tả</Text>
+      <TextInput
+        style={[styles.input, styles.textarea]}
+        placeholder="Mô tả hoặc ghi chú về đề thi..."
+        placeholderTextColor={Colors.muted}
+        multiline
+        value={form.description}
+        onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
+      />
+
+      {/* Thời gian */}
+      <Text style={styles.label}>
+        Thời gian (phút) <Text style={styles.required}>*</Text>
+      </Text>
+      <View style={styles.durationRow}>
+        <TouchableOpacity
+          style={styles.durationBtn}
+          onPress={() => setForm((f) => ({ ...f, duration: Math.max(1, (f.duration || 0) - 5) }))}
+        >
+          <Ionicons name="remove" size={22} color={Colors.text} />
+        </TouchableOpacity>
         <TextInput
-          style={[styles.input, errors.title ? styles.inputError : null]}
-          placeholder="Nhập tên đề thi..."
-          placeholderTextColor={Colors.muted}
-          value={form.title}
-          onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
-          autoFocus
-          returnKeyType="next"
+          style={[styles.durationInput, errors.duration ? styles.inputError : null]}
+          keyboardType="number-pad"
+          value={String(form.duration)}
+          onChangeText={(v) => setForm((f) => ({ ...f, duration: parseInt(v) || 0 }))}
+          textAlign="center"
         />
-        {errors.title ? <Text style={styles.errorText}>{errors.title}</Text> : null}
+        <TouchableOpacity
+          style={styles.durationBtn}
+          onPress={() => setForm((f) => ({ ...f, duration: (f.duration || 0) + 5 }))}
+        >
+          <Ionicons name="add" size={22} color={Colors.text} />
+        </TouchableOpacity>
+      </View>
+      {errors.duration ? <Text style={styles.errorText}>{errors.duration}</Text> : null}
 
-        {/* Mô tả */}
-        <Text style={styles.label}>Mô tả</Text>
-        <TextInput
-          style={[styles.input, styles.textarea]}
-          placeholder="Mô tả hoặc ghi chú về đề thi..."
-          placeholderTextColor={Colors.muted}
-          multiline
-          value={form.description}
-          onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
-        />
+      {/* Quick picks */}
+      <View style={styles.quickRow}>
+        {[15, 30, 45, 60, 90].map((t) => (
+          <TouchableOpacity
+            key={t}
+            style={[styles.quickChip, form.duration === t && styles.quickChipActive]}
+            onPress={() => setForm((f) => ({ ...f, duration: t }))}
+          >
+            <Text style={[styles.quickText, form.duration === t && styles.quickTextActive]}>
+              {t}'
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-        {/* Thời gian */}
-        <Text style={styles.label}>
-          Thời gian (phút) <Text style={styles.required}>*</Text>
+      {/* Ghi chú mức độ tự động */}
+      <View style={styles.autoNote}>
+        <Ionicons name="information-circle-outline" size={16} color={Colors.primary} />
+        <Text style={styles.autoNoteText}>
+          Mức độ đề thi sẽ tự động tính theo câu hỏi được thêm vào
         </Text>
-        <View style={styles.durationRow}>
-          <TouchableOpacity
-            style={styles.durationBtn}
-            onPress={() => setForm((f) => ({ ...f, duration: Math.max(1, (f.duration || 0) - 5) }))}
-          >
-            <Ionicons name="remove" size={22} color={Colors.text} />
-          </TouchableOpacity>
-          <TextInput
-            style={[styles.durationInput, errors.duration ? styles.inputError : null]}
-            keyboardType="number-pad"
-            value={String(form.duration)}
-            onChangeText={(v) => setForm((f) => ({ ...f, duration: parseInt(v) || 0 }))}
-            textAlign="center"
-          />
-          <TouchableOpacity
-            style={styles.durationBtn}
-            onPress={() => setForm((f) => ({ ...f, duration: (f.duration || 0) + 5 }))}
-          >
-            <Ionicons name="add" size={22} color={Colors.text} />
-          </TouchableOpacity>
-        </View>
-        {errors.duration ? <Text style={styles.errorText}>{errors.duration}</Text> : null}
+      </View>
 
-        {/* Quick picks */}
-        <View style={styles.quickRow}>
-          {[15, 30, 45, 60, 90].map((t) => (
-            <TouchableOpacity
-              key={t}
-              style={[styles.quickChip, form.duration === t && styles.quickChipActive]}
-              onPress={() => setForm((f) => ({ ...f, duration: t }))}
-            >
-              <Text style={[styles.quickText, form.duration === t && styles.quickTextActive]}>
-                {t}'
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Ghi chú mức độ tự động */}
-        <View style={styles.autoNote}>
-          <Ionicons name="information-circle-outline" size={16} color={Colors.primary} />
-          <Text style={styles.autoNoteText}>
-            Mức độ đề thi sẽ tự động tính theo câu hỏi được thêm vào
-          </Text>
-        </View>
-      </ScrollView>
-
-      {/* Footer */}
+      {/* Footer — nằm trong ScrollView để luôn hiển thị được */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.btnCancel} onPress={() => router.back()}>
           <Text style={styles.btnCancelText}>Hủy</Text>
@@ -138,14 +133,13 @@ export default function CreateExamScreen(): React.ReactElement {
           <Text style={styles.btnCreateText}>Tạo đề thi</Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: Colors.bg },
-  scroll: { flex: 1 },
-  content: { padding: 20 },
+  container: { flex: 1, backgroundColor: Colors.bg },
+  content: { padding: 20, paddingBottom: 40 },
 
   label: { fontSize: 13, fontWeight: '600', color: Colors.text, marginBottom: 8, marginTop: 20 },
   required: { color: Colors.danger },
@@ -191,14 +185,12 @@ const styles = StyleSheet.create({
 
   // Footer
   footer: {
-    flexDirection: 'row', gap: 12, padding: 16,
-    borderTopWidth: 1, borderTopColor: Colors.border,
-    backgroundColor: Colors.surface,
+    flexDirection: 'row', gap: 12, marginTop: 32,
   },
   btnCancel: {
     flex: 1, borderRadius: 10, padding: 15,
     alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.bg,
+    borderWidth: 1, borderColor: Colors.border, backgroundColor: Colors.surface,
   },
   btnCancelText: { color: Colors.text, fontWeight: '600', fontSize: 15 },
   btnCreate: {
