@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
 import { Question, Exam, HistoryEntry, CreateQuestionInput, CreateExamInput, ExamDifficulty } from '../types'
 import {
-  loadQuestions, saveQuestions,
-  loadExams, saveExams,
-  loadHistory, saveHistory,
+  loadQuestions, loadExams, loadHistory, saveAllData,
   generateId
 } from '../utils/storage'
 
@@ -106,7 +104,7 @@ export function AppProvider({ children }: { children: React.ReactNode }): React.
     questions: [], exams: [], history: [], loaded: false
   })
 
-  // Load from AsyncStorage on mount
+  // Load from SQLite on mount
   useEffect(() => {
     Promise.all([loadQuestions(), loadExams(), loadHistory()]).then(
       ([questions, exams, history]) => dispatch({ type: 'LOAD', questions, exams, history })
@@ -116,9 +114,9 @@ export function AppProvider({ children }: { children: React.ReactNode }): React.
   // Persist whenever data changes (skip before first load)
   useEffect(() => {
     if (!state.loaded) return
-    saveQuestions(state.questions)
-    saveExams(state.exams)
-    saveHistory(state.history)
+    void saveAllData(state.questions, state.exams, state.history).catch((error) => {
+      console.warn('Failed to save SQLite database', error)
+    })
   }, [state.questions, state.exams, state.history, state.loaded])
 
   const addHistory = useCallback((message: string, type: 'question' | 'exam') => {
@@ -206,3 +204,4 @@ export function useApp(): AppContextValue {
   if (!ctx) throw new Error('useApp must be used within AppProvider')
   return ctx
 }
+

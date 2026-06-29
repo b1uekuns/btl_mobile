@@ -50,7 +50,7 @@ function para(text: string, opts?: { italic?: boolean; bold?: boolean; color?: s
     children: [
       new TextRun({
         text,
-        italic: opts?.italic,
+        italics: opts?.italic,
         bold: opts?.bold,
         color: opts?.color ?? DARK,
         size: 22,
@@ -172,7 +172,7 @@ function buildTeamReport(): Document {
               ['Ngôn ngữ', 'TypeScript', '~5.3'],
               ['Navigation', 'Expo Router (file-based)', '~4.0.17'],
               ['State Management', 'Context API + useReducer', 'React 18'],
-              ['Local Storage', '@react-native-async-storage', '1.23.1'],
+              ['Local Storage', 'expo-sqlite', '~16.0.10'],
               ['Animation', 'React Native Animated API', 'Built-in'],
               ['Icons', '@expo/vector-icons (Ionicons)', '^14.0.4'],
               ['Gestures', 'react-native-gesture-handler', '~2.20.2'],
@@ -195,7 +195,7 @@ function buildTeamReport(): Document {
           para('components/               — Shared UI components', { italic: true }),
           para('context/AppContext.tsx    — Global state (Person 4)', { italic: true }),
           para('types/index.ts            — TypeScript interfaces', { italic: true }),
-          para('utils/storage.ts          — AsyncStorage helpers', { italic: true }),
+          para('utils/storage.ts          — SQLite helpers', { italic: true }),
           para('constants/colors.ts       — Design tokens', { italic: true }),
 
           // 4. Cấu trúc dữ liệu
@@ -235,7 +235,7 @@ function buildTeamReport(): Document {
               ['Navigation', 'Expo Router Tab + Stack navigator', 'app/(tabs)/_layout.tsx, app/_layout.tsx'],
               ['State Management', 'Context + useReducer, dispatch actions', 'context/AppContext.tsx'],
               ['Animation', 'Animated.timing slide-in + CountUp số liệu', 'app/(tabs)/stats.tsx'],
-              ['Local Storage', 'AsyncStorage, tự động persist/load', 'utils/storage.ts, AppContext.tsx'],
+              ['Local Storage', 'SQLite, tự động persist/load', 'utils/storage.ts, AppContext.tsx'],
               ['Data Validation', 'Validate form trước khi dispatch', 'app/(stack)/question-form.tsx, exams.tsx'],
               ['n khối chức năng', '4 màn hình chính, 1 người/1 khối', 'Xem phân công bên dưới'],
             ]
@@ -320,7 +320,7 @@ const members: MemberConfig[] = [
     details: [
       {
         title: 'Client-side filtering với useMemo',
-        body: 'Thay vì gọi lại AsyncStorage mỗi khi người dùng nhập tìm kiếm, tôi sử dụng useMemo để tính toán lại danh sách đã lọc mỗi khi topic hoặc difficulty thay đổi. Điều này đảm bảo UI phản hồi ngay lập tức mà không có độ trễ.',
+        body: 'Thay vì gọi lại SQLite mỗi khi người dùng nhập tìm kiếm, tôi sử dụng useMemo để tính toán lại danh sách đã lọc mỗi khi topic hoặc difficulty thay đổi. Điều này đảm bảo UI phản hồi ngay lập tức mà không có độ trễ.',
       },
       {
         title: 'Form validation',
@@ -419,20 +419,20 @@ const members: MemberConfig[] = [
     name: '[Họ và tên thành viên 4]',
     mssv: 'XXXX0004',
     role: 'Thống kê + State Management',
-    screen: 'Thống kê (Tab 3) + AppContext + AsyncStorage',
+    screen: 'Thống kê (Tab 3) + AppContext + SQLite',
     files: [
       'app/(tabs)/stats.tsx — Màn hình thống kê với animation',
       'context/AppContext.tsx — Global state, useReducer',
-      'utils/storage.ts — AsyncStorage helpers',
+      'utils/storage.ts — SQLite helpers',
       'constants/colors.ts — Design tokens',
     ],
-    idea: 'Mục tiêu: (1) Cung cấp màn hình thống kê trực quan với animation để đáp ứng yêu cầu kỹ thuật về animation. (2) Xây dựng tầng state management tập trung bằng Context + useReducer để toàn bộ nhóm chia sẻ cùng data. (3) Tích hợp AsyncStorage để dữ liệu được persist qua các lần mở app.',
+    idea: 'Mục tiêu: (1) Cung cấp màn hình thống kê trực quan với animation để đáp ứng yêu cầu kỹ thuật về animation. (2) Xây dựng tầng state management tập trung bằng Context + useReducer để toàn bộ nhóm chia sẻ cùng data. (3) Tích hợp SQLite để dữ liệu được persist qua các lần mở app.',
     contribution: [
       'Thiết kế AppContext với 9 action types và reducer xử lý đầy đủ edge cases',
       'Triển khai CountUp animation dùng Animated.timing + listener để đếm số liệu',
       'Slide-in animation khi màn hình Stats được focus dùng useFocusEffect',
       'Xây dựng biểu đồ thanh phân bố độ khó (width percentage)',
-      'Triển khai AsyncStorage persistence: auto-load khi mount, auto-save khi state thay đổi',
+      'Triển khai SQLite persistence: auto-load khi mount, auto-save khi state thay đổi',
       'Quản lý HistoryEntry: ghi log 50 hoạt động gần nhất',
       'Tạo constants/colors.ts làm design token cho toàn bộ nhóm sử dụng',
     ],
@@ -443,7 +443,7 @@ const members: MemberConfig[] = [
       },
       {
         title: 'useReducer pattern',
-        body: 'Reducer pure function, không có side effects. Tất cả AsyncStorage I/O được xử lý trong useEffect bên ngoài reducer. ADD_QUESTION action trong reducer trả về state mới ngay lập tức cho UI responsive, trong khi useEffect lắng nghe state.questions thay đổi và persist xuống disk bất đồng bộ.',
+        body: 'Reducer pure function, không có side effects. Tất cả SQLite I/O được xử lý trong useEffect bên ngoài reducer. ADD_QUESTION action trong reducer trả về state mới ngay lập tức cho UI responsive, trong khi useEffect lắng nghe state.questions thay đổi và persist xuống disk bất đồng bộ.',
       },
       {
         title: 'DELETE_QUESTION cascade',
@@ -453,7 +453,7 @@ const members: MemberConfig[] = [
     difficulties: [
       'Khó khăn: Animated.Value không trực tiếp render number trong Text component.',
       'Giải quyết: Dùng listener (addListener) để sync Animated.Value sang React state, render state đó.',
-      'Khó khăn: AsyncStorage race condition khi state chưa loaded mà useEffect đã gọi save.',
+      'Khó khăn: SQLite save race condition khi state chưa loaded mà useEffect đã gọi save.',
       'Giải quyết: Thêm flag state.loaded, chỉ trigger save effect khi loaded === true.',
     ],
     selfEval: 'Tầng state management hoạt động ổn định và dễ mở rộng. Animation đáp ứng đúng yêu cầu kỹ thuật và tạo trải nghiệm tốt hơn. Điểm cần cải thiện: có thể dùng react-native-reanimated thay Animated API để animation mượt hơn trên thiết bị thực.',
@@ -553,3 +553,6 @@ async function main(): Promise<void> {
 }
 
 main().catch(console.error)
+
+
+
