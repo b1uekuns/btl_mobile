@@ -1,11 +1,20 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
-import { Question, Exam, HistoryEntry, CreateQuestionInput, CreateExamInput } from '../types'
+import { Question, Exam, HistoryEntry, CreateQuestionInput, CreateExamInput, ExamDifficulty } from '../types'
 import {
   loadQuestions, saveQuestions,
   loadExams, saveExams,
   loadHistory, saveHistory,
   generateId
 } from '../utils/storage'
+
+// ── Tính mức độ đề thi dựa theo các câu hỏi được chọn ────────────────────────────
+// 0 câu → mixed | tất cả cùng loại → loại đó | dính 1 câu khác → mixed
+function computeExamDifficulty(questions: Question[], questionIds: string[]): ExamDifficulty {
+  const included = questions.filter((q) => questionIds.includes(q.id))
+  if (included.length === 0) return 'mixed'
+  const first = included[0].difficulty
+  return included.every((q) => q.difficulty === first) ? first : 'mixed'
+}
 
 // ── State ──────────────────────────────────────────────────────────────────
 interface AppState {
@@ -48,20 +57,28 @@ function reducer(state: AppState, action: Action): AppState {
     case 'ADD_QUESTIONS_TO_EXAM':
       return {
         ...state,
-        exams: state.exams.map(e =>
-          e.id === action.examId
-            ? { ...e, questionIds: [...new Set([...e.questionIds, ...action.questionIds])] }
-            : e
-        )
+        exams: state.exams.map(e => {
+          if (e.id !== action.examId) return e
+          const newIds = [...new Set([...e.questionIds, ...action.questionIds])]
+          return {
+            ...e,
+            questionIds: newIds,
+            difficulty: computeExamDifficulty(state.questions, newIds),
+          }
+        })
       }
     case 'REMOVE_QUESTION_FROM_EXAM':
       return {
         ...state,
-        exams: state.exams.map(e =>
-          e.id === action.examId
-            ? { ...e, questionIds: e.questionIds.filter(id => id !== action.questionId) }
-            : e
-        )
+        exams: state.exams.map(e => {
+          if (e.id !== action.examId) return e
+          const newIds = e.questionIds.filter(id => id !== action.questionId)
+          return {
+            ...e,
+            questionIds: newIds,
+            difficulty: computeExamDifficulty(state.questions, newIds),
+          }
+        })
       }
     case 'ADD_HISTORY':
       return { ...state, history: [action.entry, ...state.history].slice(0, 50) }
@@ -150,7 +167,7 @@ export function AppProvider({ children }: { children: React.ReactNode }): React.
       title: input.title.trim(),
       description: input.description.trim(),
       duration: input.duration,
-      difficulty: input.difficulty,
+      difficulty: 'mixed',   // sẽ tự cập nhật khi thêm câu hỏi
       questionIds: [],
       createdAt: new Date().toISOString(),
     }
