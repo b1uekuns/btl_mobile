@@ -2,11 +2,19 @@ import React from 'react'
 import { View, TextInput, ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Colors } from '../constants/colors'
 
-const DIFFICULTIES = [
+const DIFFICULTIES_QUESTION = [
   { value: '', label: 'Tất cả' },
   { value: 'easy', label: 'Dễ' },
   { value: 'medium', label: 'TB' },
   { value: 'hard', label: 'Khó' },
+]
+
+const DIFFICULTIES_EXAM = [
+  { value: '', label: 'Tất cả' },
+  { value: 'easy', label: 'Dễ' },
+  { value: 'medium', label: 'TB' },
+  { value: 'hard', label: 'Khó' },
+  { value: 'mixed', label: 'Hỗn hợp' },
 ]
 
 interface Props {
@@ -14,21 +22,26 @@ interface Props {
   difficulty: string
   onTopicChange: (v: string) => void
   onDifficultyChange: (v: string) => void
+  /** Placeholder của ô tìm kiếm */
+  searchLabel?: string
+  /** Dùng chip mức độ cho đề thi (có thêm "Hỗn hợp") */
+  examMode?: boolean
 }
 
-export default function SearchFilterBar({ topic, difficulty, onTopicChange, onDifficultyChange }: Props): React.ReactElement {
+export default function SearchFilterBar({ topic, difficulty, onTopicChange, onDifficultyChange, searchLabel, examMode = false }: Props): React.ReactElement {
+  const chips = examMode ? DIFFICULTIES_EXAM : DIFFICULTIES_QUESTION
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="🔍  Tìm theo chủ đề..."
+        placeholder={searchLabel ?? '🔍  Tìm theo chủ đề...'}
         placeholderTextColor={Colors.muted}
         value={topic}
         onChangeText={onTopicChange}
         clearButtonMode="while-editing"
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
-        {DIFFICULTIES.map((d) => (
+        {chips.map((d) => (
           <TouchableOpacity
             key={d.value}
             style={[styles.chip, difficulty === d.value && styles.chipActive]}

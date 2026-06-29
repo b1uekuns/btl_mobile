@@ -24,10 +24,31 @@ export default function RootLayout(): React.ReactElement {
         <Stack.Screen
           name="(stack)/question-form"
           options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom', // modal luôn slide từ dưới lên
+            animation: 'slide_from_right',
             title: 'Câu hỏi',
             headerShown: true,
+            headerTintColor: '#fff',
+            headerStyle: { backgroundColor: '#3b82f6' },
+            gestureEnabled: true,
+          }}
+        />
+        <Stack.Screen
+          name="(stack)/create-exam"
+          options={{
+            animation: 'slide_from_right',
+            headerShown: true,
+            title: 'Tạo đề thi mới',
+            headerTintColor: '#fff',
+            headerStyle: { backgroundColor: '#3b82f6' },
+            gestureEnabled: true,
+          }}
+        />
+        <Stack.Screen
+          name="(stack)/question-bank"
+          options={{
+            animation: 'slide_from_right',
+            headerShown: true,
+            title: 'Ngân hàng câu hỏi',
             headerTintColor: '#fff',
             headerStyle: { backgroundColor: '#3b82f6' },
             gestureEnabled: true,

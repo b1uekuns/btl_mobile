@@ -45,5 +45,4 @@ export interface CreateExamInput {
   title: string
   description: string
   duration: number
-  difficulty: ExamDifficulty
 }
