@@ -32,7 +32,7 @@ const MEMBERS = [
     mssv: "20231627",
     role: "Người 4 – Thống kê",
     tasks:
-      "Màn hình Thống kê, Animation đếm số, biểu đồ phân bố độ khó, AppContext + AsyncStorage",
+      "Màn hình Thống kê, Animation đếm số, biểu đồ phân bố độ khó, AppContext + SQLite",
   },
 ];
 
@@ -55,7 +55,7 @@ export default function TeamScreen(): React.ReactElement {
           ["Ngôn ngữ", "TypeScript"],
           ["Navigation", "Expo Router"],
           ["State", "Context API + useReducer"],
-          ["Lưu trữ", "AsyncStorage (@react-native-async-storage)"],
+          ["Lưu trữ", "SQLite (expo-sqlite)"],
           ["Animation", "React Native Animated API"],
         ].map(([key, val]) => (
           <View key={key} style={styles.techRow}>
@@ -177,3 +177,4 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
+

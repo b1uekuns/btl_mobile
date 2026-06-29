@@ -30,7 +30,7 @@ const SECTIONS = [
   },
   {
     title: '💾  Lưu trữ dữ liệu',
-    content: `Tất cả dữ liệu được lưu cục bộ trên thiết bị bằng AsyncStorage.\n\n• Dữ liệu tự động được lưu sau mỗi thao tác.\n• Dữ liệu được nạp lại khi mở lại ứng dụng.\n• Tab "Lịch sử" ghi lại 50 thao tác gần nhất.`,
+    content: `Tất cả dữ liệu được lưu cục bộ trên thiết bị bằng SQLite.\n\n• Dữ liệu tự động được lưu sau mỗi thao tác.\n• Dữ liệu được nạp lại khi mở lại ứng dụng.\n• Tab "Lịch sử" ghi lại 50 thao tác gần nhất.`,
   },
 ]
 
@@ -86,3 +86,4 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 14, fontWeight: '600', color: Colors.text, flex: 1 },
   sectionContent: { paddingHorizontal: 16, paddingBottom: 16, fontSize: 14, color: Colors.muted, lineHeight: 22 },
 })
+
