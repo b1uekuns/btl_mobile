@@ -8,5 +8,7 @@ expo-env.d.ts
 node_modules/
 reports/
 .expo/
+scripts/
+
 
 CODEBASE_OVERVIEW.md
